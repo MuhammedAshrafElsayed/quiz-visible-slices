@@ -1,0 +1,32 @@
+{
+  "name": "quiz-visible-slices",
+  "version": "0.1.0",
+  "description": "Quiz: Visible Slices",
+  "scripts": {
+    "test": "jest",
+    "test-debug": "node --expose-gc --inspect-brk node_modules/.bin/jest --runInBand --logHeapUsage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tarquas/quiz-visible-slices.git"
+  },
+  "keywords": [
+    "quiz",
+    "software",
+    "development",
+    "skill",
+    "javascript",
+    "node",
+    "algorithm",
+    "ecmascript"
+  ],
+  "author": "Taras Mykhailovych",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tarquas/quiz-visible-slices/issues"
+  },
+  "homepage": "https://github.com/tarquas/quiz-visible-slices#readme",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
