@@ -2,21 +2,23 @@
 const range = 2147483648;
 const validateInput = (task) => {
     if (task.end <= task.start) throw ('bogus slice')
-    if (!Number.isInteger(task.start) || typeof (task.start) !== 'number') throw ('start must be integer')
+    if (!Number.isInteger(task.start)) throw ('start must be integer')
     if (!Number.isInteger(task.end)) throw ('end must be integer')
     if (!Number.isInteger(task.rank)) throw ('rank must be integer')
-    if (task.start < -1 * range || task.start >= range) throw ('start out of range')
-    if (task.end < -1 * range || task.end >= range) throw ('end out of range')
-    if (task.rank < -1 * range || task.rank >= range) throw ('rank out of range')
+    if (task.start < -range || task.start >= range) throw ('start out of range')
+    if (task.end < -range || task.end >= range) throw ('end out of range')
+    if (task.rank < -range || task.rank >= range) throw ('rank out of range')
 }
 const compareFn = (a, b) => {
     return (a.start - b.start) || (a.rank - b.rank);
 }
 const getMaxRank = (task1, task2) => {
-    if (task1.in && !task2.in) return task1.in.rank <= task2.rank ? task1 : task2;
-    else if (task1.in && task2.in) return task1.in.rank <= task2.in.rank ? task1 : task2;
-    else if (!task1.in && task2.in) return task1.rank <= task2.in.rank ? task1 : task2;
-    else return task1.rank <= task2.rank ? task1 : task2;
+    if (task1.in) {
+        if (task2.in) return task1.in.rank <= task2.in.rank ? task1 : task2;
+        return task1.in.rank <= task2.rank ? task1 : task2;
+    }
+    if(task2.in) return task1.rank <= task2.in.rank ? task1 : task2;
+    return task1.rank <= task2.rank ? task1 : task2;
 }
 const getLeadingTask = (task1, task2) => {
     // return task1.start < task2.start ? task1 : task2
@@ -53,11 +55,11 @@ const placetasks = (task1, task2) => {
     let highRank = getMaxRank(task1, task2);
     /** get the task wich starts early it retuns null if the two tasks start time is equal */
     let leadingTask = getLeadingTask(task1, task2);
+    let intersected = isIntersected(task1, task2);
     /** task1 and task2 does not intersect and task2 is the leader task then task1 will be applied */
+    if (!intersected && task2 === leadingTask) return [task1]
     /** task1 and task2 does not intersect and task1 is the leader task then task1 will be applied */
-
-    if (!isIntersected(task1, task2) && task2 === leadingTask) return [task1]
-    if (!isIntersected(task1, task2) && task1 === leadingTask) {
+    if (!intersected && task1 === leadingTask) {
         newTask.start = task2.start;
         newTask.end = task2.end;
         newTask.in = task2.in || task2;
@@ -108,7 +110,7 @@ const solution = (input) => {
         /** place each 2 tasks in the timeline */
         const slots = placetasks(task1, task2);
         /** last task needs to be merged with the next task if exists */
-        task1 = slots.splice(-1)[0];
+        task1 = slots.pop();
         visibleSlice.push(...slots);
     }
     visibleSlice.push(task1);
